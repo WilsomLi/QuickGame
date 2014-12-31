@@ -52,7 +52,7 @@
             <PreSize X="0.0000" Y="0.0000" />
             <FileData Type="Normal" Path="login/Frd11.png" />
           </NodeObjectData>
-          <NodeObjectData Name="btnLogin" ActionTag="-997159273" FrameEvent="" CallBackType="Click" CallBackName="onLogin" Tag="13" ObjectIndex="1" TouchEnable="True" FontSize="14" ButtonText="" Scale9Width="240" Scale9Height="81" ctype="ButtonObjectData">
+          <NodeObjectData Name="btnLogin" ActionTag="-997159273" FrameEvent="" Tag="13" ObjectIndex="1" TouchEnable="True" FontSize="14" ButtonText="" Scale9Width="240" Scale9Height="81" ctype="ButtonObjectData">
             <Position X="559.8749" Y="134.8749" />
             <Scale ScaleX="1.0000" ScaleY="1.0000" />
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />

@@ -13,6 +13,9 @@
           <Image Name="LI07.jpg" />
         </Folder>
         <Project Name="Login.csd" />
+        <Folder Name="main">
+          <Image Name="bbg_spring_beach.jpg" />
+        </Folder>
       </RootFolder>
     </Group>
   </SolutionFolder>

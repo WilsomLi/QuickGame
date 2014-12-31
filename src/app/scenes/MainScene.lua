@@ -9,7 +9,7 @@ function MainScene:ctor()
 --        :align(display.CENTER, display.cx, display.cy)
 --        :addTo(self)
         
-    cc.uiloader:load("Login.csb"):addTo(self)
+    cc.uiloader:load("MainScene.csb"):addTo(self)
 end
 
 function MainScene:onEnter()
