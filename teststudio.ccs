@@ -1,0 +1,19 @@
+<Solution>
+  <PropertyGroup Name="teststudio" Version="2.0.6.0" Type="CocosStudio" />
+  <SolutionFolder>
+    <Group ctype="ResourceGroup">
+      <RootFolder Name=".">
+        <Project Name="MainScene.csd" />
+        <Folder Name="login">
+          <Image Name="BaS31.png" />
+          <Image Name="BaS32.png" />
+          <Image Name="Frd11.png" />
+          <Image Name="LI01.png" />
+          <Image Name="LI02.png" />
+          <Image Name="LI07.jpg" />
+        </Folder>
+        <Project Name="Login.csd" />
+      </RootFolder>
+    </Group>
+  </SolutionFolder>
+</Solution>
