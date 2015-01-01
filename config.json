@@ -2,7 +2,7 @@
     "init_cfg":{
         "isLandscape":true,
         "isWindowTop":false,
-        "name":"lijia",
+        "name":"QuickGame",
         "width":1136,
         "height":640,
         "entry":"src/main.lua",

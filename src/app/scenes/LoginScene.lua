@@ -16,7 +16,7 @@ function LoginScene:onEnter()
     self._edtPwd = cc.uiloader:seekNodeByTag(self, 15)
     
     btnLogin:addTouchEventListener(function(btn,type)
-        if(type ~= 2) then return end
+        if(type ~= TOUCH_EVENT_ENDED) then return end
         local name = self._edtName:getString()
         local pwd = self._edtPwd:getString()
         if(name == "admin" and pwd=="admin") then

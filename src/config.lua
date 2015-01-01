@@ -9,7 +9,8 @@ DEBUG_FPS = true
 DEBUG_MEM = false
 
 -- load deprecated API
-LOAD_DEPRECATED_API = false
+--LOAD_DEPRECATED_API = fase
+CC_USE_DEPRECATED_API = true
 
 -- load shortcodes API
 LOAD_SHORTCODES_API = true
