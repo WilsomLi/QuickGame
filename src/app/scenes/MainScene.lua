@@ -13,6 +13,10 @@ function MainScene:ctor()
 end
 
 function MainScene:onEnter()
+    local hero = require("app.layers.SharkLayer").new()
+--    hero:align(display.CENTER, display.cx, display.cy)
+    hero:setPosition(cc.p(display.cx, display.cy * 0.5))
+    hero:addTo(self)
 end
 
 function MainScene:onExit()

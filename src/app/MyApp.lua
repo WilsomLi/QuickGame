@@ -12,7 +12,8 @@ end
 function MyApp:run()
     cc.FileUtils:getInstance():addSearchPath("res/")
     
-    self:enterScene("LoginScene.lua")
+--    self:enterScene("LoginScene.lua")
+    self:enterScene("MainScene.lua")
 end
 
 return MyApp
