@@ -6,6 +6,12 @@ function __G__TRACKBACK__(errorMessage)
     print("----------------------------------------")
 end
 
+cc.FileUtils:getInstance():addSearchPath("res/")
+
+cc.LuaLoadChunksFromZIP("res/framework_precompiled.zip")
+cc.LuaLoadChunksFromZIP("res/update.zip")
+
 package.path = package.path .. ";src/"
 cc.FileUtils:getInstance():setPopupNotify(false)
-require("app.MyApp").new():run()
+--require("app.MyApp").new():run()
+require("UpdateScene").new():run()

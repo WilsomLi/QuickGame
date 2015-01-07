@@ -15,18 +15,7 @@ function LoginScene:onEnter()
     self._edtName = cc.uiloader:seekNodeByTag(self, 14)
     self._edtPwd = cc.uiloader:seekNodeByTag(self, 15)
     
-    btnLogin:addTouchEventListener(function(sender,eventType)
-        if(eventType ~= TOUCH_EVENT_ENDED) then return end
-        local name = self._edtName:getString()
-        local pwd = self._edtPwd:getString()
---        if(name == "admin" and pwd=="admin") then
---            app:enterScene("MainScene.lua")
---        else
---            print("login error")
---        end
-        self:onLogin(name,pwd)
-      end
-    )
+    btnLogin:addTouchEventListener(handler(self,self.onLogin))
 end
 
 function LoginScene:onExit()
@@ -35,7 +24,11 @@ function LoginScene:onExit()
     self._widget = nil
 end
 
-function LoginScene:onLogin(username,pwd)
+function LoginScene:onLogin(sender,eventType)
+    if(eventType ~= TOUCH_EVENT_ENDED) then return end
+    local username = self._edtName:getString()
+    local pwd = self._edtPwd:getString()
+    
     if(device.platform ~= "windows" and not network.isInternetConnectionAvailable()) then
         print("网络不可用")
         return
@@ -57,10 +50,12 @@ function LoginScene:onLogin(username,pwd)
     	print(response)
     	if(response == "login success") then
             app:enterScene("MainScene.lua")
+        else
+--            cc.dia
     	end
     end
     
-    local url = "http://gameinstall.sinaapp.com/testlogin.php"
+    local url = SERVER.."testlogin.php"
     local request = network.createHTTPRequest(onRequeseFinished,url,"POST")
     request:addPOSTValue("name",username)
     request:addPOSTValue("pwd",pwd)

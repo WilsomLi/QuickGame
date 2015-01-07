@@ -37,12 +37,14 @@ function SharkLayer:onEnter()
     print("shark enter")
     
     local function onTouchesEnded(touches, event)
+        audio.stopAllSounds()
         if self._motion == "skill" then
             self:playMotions("die")
         elseif self._motion == "attack" then
             self:playMotions("skill")
         else
             self:playMotions("attack")
+            audio.playSound(MUSIC.attackSound,true)
         end
     end
     

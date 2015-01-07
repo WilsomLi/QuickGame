@@ -17,6 +17,8 @@ function MainScene:onEnter()
 --    hero:align(display.CENTER, display.cx, display.cy)
     hero:setPosition(cc.p(display.cx, display.cy * 0.5))
     hero:addTo(self)
+    
+    audio.playMusic(MUSIC.backgroundMusic,true)
 end
 
 function MainScene:onExit()

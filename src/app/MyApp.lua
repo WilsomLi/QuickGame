@@ -11,9 +11,16 @@ end
 
 function MyApp:run()
     cc.FileUtils:getInstance():addSearchPath("res/")
+    self:preLoadMusic()
     
---    self:enterScene("LoginScene.lua")
-    self:enterScene("MainScene.lua")
+    self:enterScene("LoginScene.lua")
+--    self:enterScene("MainScene.lua")
+end
+
+function MyApp:preLoadMusic()
+    for k, v in pairs(MUSIC) do
+        audio.preloadMusic(v)
+    end    
 end
 
 return MyApp
