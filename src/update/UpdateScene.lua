@@ -5,18 +5,22 @@ require("config")
 require("cocos.init")
 require("framework.init")
 
-local nowVersion = cc.UserDefault:getStringForKey("current-version")
-local bigVersion = cc.UserDefault:getStringForKey("big-version")
+--local nowVersion = cc.UserDefault:getInstance():getStringForKey("current-version")
+--local bigVersion = cc.UserDefault:getInstance():getStringForKey("big-version")
+local nowVersion = "1.0.0"
+local bigVersion = "1.0"
 
 local UpdateScene = class("UpdateScene",function()
     return display.newScene("UpdateScene")
 end)
 
 function UpdateScene:ctor()
-    self._path = device.writablePath.."kdfs/"
+--    cc.FileUtils:getInstance():addSearchPath("res/")
+    
+    self._path = device.writablePath
     self:createDownPath(self._path)
-    self:createDownPath(self._path.."res/")
-    self:createDownPath(self._path.."scripts/")
+--    self:createDownPath(self._path.."res/")
+--    self:createDownPath(self._path.."scripts/")
     if string.len(nowVersion) == 0 then
         nowVersion = bigVersion..".0"
     end
@@ -28,10 +32,17 @@ function UpdateScene:ctor()
         self:delAllFilesInDir(self._path)
     end
     
-    self._updateProgress = display.newProgressTimer("bar.png",display.PROGRESS_TIMER_BAR)
-    self._proLabel = display.newTTFLabel({text="更新",size=26,align=ui.TEXT_ALIGN_CENTER,
-        color=display.COLOR_BLACK}):pos(display.cx,160):addTo(self)
+    self._updateProgress = display.newProgressTimer("ui/bar.png",display.PROGRESS_TIMER_BAR):addTo(self)
+--    self._proLabel = display.newTTFLabel({text="更新",size=26,align=cc.TEXT_ALIGNMENT_CENTER,
+--        color=display.COLOR_BLACK}):pos(display.cx,160):addTo(self)
+        
+    self._proLabel = cc.ui.UILabel.new({
+        UILabelType = 2, text = "Hello, World", size = 64})
+        :align(display.CENTER, display.cx, display.cy)
+        :addTo(self)
     
+    display.replaceScene(self)
+    self:onEnter()
 end
 
 function UpdateScene:onEnter()
@@ -54,8 +65,9 @@ end
 function UpdateScene:downIndexedVersion()
     if not self._nowDownIndex then self._nowDownIndex = 1 end
     local versionData = self._needDownVersions[self._nowDownIndex]
-    local versionUrl = SERVER.."version/?fileVersion"..versionData.version
-    local packageUrl = versionData.filrUrl
+--    local versionUrl = SERVER.."version/?fileVersion"..versionData.version
+    local versionUrl = SERVER.."update/version"
+    local packageUrl = tostring(versionData.fileUrl)
     
     local function onError(errorCode)
         if errorCode == cc.ASSETSMANAGER_NO_NEW_VERSION then
@@ -63,6 +75,7 @@ function UpdateScene:downIndexedVersion()
         elseif errorCode == cc.ASSETSMANAGER_NETWORK then
             self._proLabel:setString("network error")
         end
+        self:noUpdateStart()
     end
     
     local function onProgress(percent)
@@ -72,19 +85,28 @@ function UpdateScene:downIndexedVersion()
     
     local function onSuccess()
         self._proLabel:setString("更新成功，进入游戏")
+        self:afterUpdateStart()
     end
     
+    local assetManager
     if self._nowDownIndex==1 then
-        self._assetManager = cc.AssetsManager:create(packageUrl,versionUrl,self._path,onError,onProgress,onSuccess)
+--        assetManager = cc.AssetsManager:create(packageUrl,versionUrl,self._path,onError,onProgress,onSuccess)
+--        assetManager = cc.AssetsManager:create(packageUrl, versionUrl, self._path) --奇葩了，不行
+        assetManager = cc.AssetsManager:new("https://gameinstall.sinaapp.com/update/game.zip",
+            "https://gameinstall.sinaapp.com/update/version",self._path)
+        assetManager:retain()
+        assetManager:setDelegate(onError, cc.ASSETSMANAGER_PROTOCOL_ERROR )
+        assetManager:setDelegate(onProgress, cc.ASSETSMANAGER_PROTOCOL_PROGRESS)
+        assetManager:setDelegate(onSuccess, cc.ASSETSMANAGER_PROTOCOL_SUCCESS )
+        assetManager:setConnectionTimeout(3)
     else
-        self._assetManager:setVersionFileUrl(versionUrl)
-        self._assetManager:setPackageUrl(packageUrl)
+        assetManager:setVersionFileUrl(versionUrl)
+        assetManager:setPackageUrl(packageUrl)
     end
     
-    if self._assetManager:checkUpdate() then
-        self._assetManager:update()
+    if assetManager:checkUpdate() then
+        assetManager:update()
     end
-    
 end
 
 function UpdateScene:getNewestVersion()
@@ -92,6 +114,7 @@ function UpdateScene:getNewestVersion()
     
     function onNetCallback(event)
         local ok = (event.name == "completed")
+        if not ok then return end
         local request = event.request
         local code = request:getResponseStatusCode()
         if not ok or code ~= 200 then
@@ -101,6 +124,9 @@ function UpdateScene:getNewestVersion()
             end,2)
             return
         end
+        
+        if self._haveGetResponse then return end
+        self._haveGetResponse = true
         
         local needDownVersion = json.decode(request:getResponseString())
         if needDownVersion then
@@ -139,20 +165,31 @@ function UpdateScene:afterUpdateStart()
     end
     
     print("更新成功，启动游戏")
-    package.loaded["config"] = nil
-    cc.LuaLoadChunksFromZIP("game.zip")
-    require("game")
-    game.startup()
+--    package.loaded["config"] = nil
+    self:startgame()
 end
 
-function UpdateScene:onUpdateStart()
+function UpdateScene:noUpdateStart()
     print("没有更新或者更新失败启动游戏")
-    cc.LuaLoadChunksFromZIP("game.zip")
-    require("game")
-    game.startup()
+    self:startgame()
 end
 
-function UpdateScene:chekDirOK(path)
+function UpdateScene:startgame()
+--    cc.LuaLoadChunksFromZIP("game.zip")
+    require("luac.out")
+--    game.startup()
+--    require("game")
+    game.startup()
+    
+--    print(self._path.."package/luaScript/")
+--    cc.FileUtils:getInstance():addSearchPath(self._path.."package/luaScript",true)
+----    cc.FileUtils:getInstance():addSearchPath(self._path)
+--    local moduleName = "AssetsManagerTest/AssetsManagerModule"
+--    package.loaded[moduleName] = nil
+--    require(moduleName).newScene(UpdateScene)
+end
+
+function UpdateScene:checkDirOK(path)
     require "lfs"
     local oldPath = lfs.currentdir()
     if lfs.chdir(path) then
@@ -164,14 +201,14 @@ function UpdateScene:chekDirOK(path)
     end
 end
 
-function UpdateScene:delAllFilesInDirector(path)
+function UpdateScene:delAllFilesInDir(path)
     for file in lfs.dir(path) do
         if file ~= "." and file ~= ".." then
             local f = path.."/"..file
             local attr = lfs.attributes(f)
             assert(type(attr)=="table")
             if attr.mode == "directory" then
-                self:delAllFilesInDirector(f)
+                self:delAllFilesInDir(f)
             else
                 os.remove(f)
             end            

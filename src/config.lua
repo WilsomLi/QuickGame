@@ -32,4 +32,4 @@ MUSIC = {
     attackSound = "sound/60042_S3.mp3"
 }
 
-SERVER = "http://gameinstall.sinaapp.com/"
+SERVER = "https://gameinstall.sinaapp.com/"
